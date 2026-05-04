@@ -105,6 +105,18 @@ export default function EmployeeWizard({ onComplete }) {
   const updateSection = (key) => (data) =>
     setFormData(prev => ({ ...prev, [key]: data }));
 
+  const STATE_TAXES_STEP = 4;
+
+  const navigateToStep = (step, currentFormData) => {
+    let data = currentFormData;
+    if (step === STATE_TAXES_STEP && !currentFormData.state.stateCode && currentFormData.personal.state) {
+      data = { ...currentFormData, state: { ...currentFormData.state, stateCode: currentFormData.personal.state } };
+      setFormData(data);
+    }
+    setCurrentStep(step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleContinue = () => {
     const stepErrors = validateStep(currentStep, formData);
     if (Object.keys(stepErrors).length > 0) {
@@ -115,25 +127,21 @@ export default function EmployeeWizard({ onComplete }) {
 
     if (currentStep < STEP_TITLES.length - 1) {
       setCompletedSteps(prev => new Set([...prev, currentStep]));
-      setCurrentStep(s => s + 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      navigateToStep(currentStep + 1, formData);
     } else {
-      // Final submit
       onComplete(formData);
     }
   };
 
   const handleBack = () => {
     setErrors({});
-    setCurrentStep(s => s - 1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigateToStep(currentStep - 1, formData);
   };
 
   const handleStepClick = (step) => {
     if (completedSteps.has(step)) {
       setErrors({});
-      setCurrentStep(step);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      navigateToStep(step, formData);
     }
   };
 
@@ -185,7 +193,7 @@ export default function EmployeeWizard({ onComplete }) {
             formData={formData}
             onEdit={(step) => {
               setErrors({});
-              setCurrentStep(step);
+              navigateToStep(step, formData);
             }}
           />
         )}

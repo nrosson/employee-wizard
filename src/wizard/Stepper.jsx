@@ -22,12 +22,10 @@ export default function Stepper({ currentStep, completedSteps, onStepClick }) {
       {STEPS.map((step, i) => {
         const isCompleted = completedSteps.has(i);
         const isActive = currentStep === i;
-        const isPending = !isCompleted && !isActive;
-        const isClickable = isCompleted;
+        const isClickable = isCompleted && !isActive;
 
         return (
           <div key={i} style={{ display: 'flex', alignItems: 'flex-start', flex: i < STEPS.length - 1 ? 1 : 'none', minWidth: 0 }}>
-            {/* Step item */}
             <button
               onClick={() => isClickable && onStepClick(i)}
               disabled={!isClickable}
@@ -35,7 +33,7 @@ export default function Stepper({ currentStep, completedSteps, onStepClick }) {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: 8,
+                gap: 6,
                 background: 'none',
                 border: 'none',
                 cursor: isClickable ? 'pointer' : 'default',
@@ -43,7 +41,7 @@ export default function Stepper({ currentStep, completedSteps, onStepClick }) {
                 flexShrink: 0,
               }}
             >
-              {/* Circle */}
+              {/* Circle — active always wins over completed */}
               <div style={{
                 width: 32,
                 height: 32,
@@ -54,29 +52,27 @@ export default function Stepper({ currentStep, completedSteps, onStepClick }) {
                 fontSize: 13,
                 fontWeight: 700,
                 transition: 'all 200ms',
-                background: isCompleted
+                background: isActive
                   ? 'var(--color-primary)'
-                  : isActive
-                    ? 'var(--surface-default)'
+                  : isCompleted
+                    ? 'var(--color-primary)'
                     : 'var(--surface-raised)',
                 border: isActive
                   ? '2px solid var(--color-primary)'
                   : isCompleted
                     ? '2px solid var(--color-primary)'
                     : '2px solid var(--border-input)',
-                color: isCompleted
-                  ? '#fff'
-                  : isActive
-                    ? 'var(--color-primary)'
-                    : 'var(--text-muted)',
+                color: (isActive || isCompleted) ? '#fff' : 'var(--text-muted)',
+                boxShadow: isActive ? '0 0 0 3px var(--color-focus)' : 'none',
               }}>
-                {isCompleted ? <Check size={15} strokeWidth={3} /> : i + 1}
+                {/* Active shows number even if completed; completed-only shows checkmark */}
+                {isActive ? i + 1 : isCompleted ? <Check size={15} strokeWidth={3} /> : i + 1}
               </div>
 
               {/* Label */}
               <span style={{
                 fontSize: 11,
-                fontWeight: isActive ? 700 : isCompleted ? 600 : 400,
+                fontWeight: isActive ? 700 : isCompleted ? 500 : 400,
                 color: isActive
                   ? 'var(--color-primary)'
                   : isCompleted
@@ -88,6 +84,23 @@ export default function Stepper({ currentStep, completedSteps, onStepClick }) {
               }}>
                 {step.label}
               </span>
+
+              {/* "Editing" pill — only on active step */}
+              {isActive && (
+                <span style={{
+                  fontSize: 9,
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  color: 'var(--color-primary)',
+                  background: 'var(--surface-brand-subtle)',
+                  padding: '2px 6px',
+                  borderRadius: 'var(--radius-full)',
+                  marginTop: -2,
+                }}>
+                  Editing
+                </span>
+              )}
             </button>
 
             {/* Connector line */}
