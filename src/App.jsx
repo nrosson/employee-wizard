@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { Sidebar, TopBar, Footer } from './shell/Shell.jsx';
 import EmployeeWizard from './wizard/EmployeeWizard.jsx';
-import EmployeeScrollForm from './wizard/EmployeeScrollForm.jsx';
 import EmployeeInviteForm from './wizard/EmployeeInviteForm.jsx';
 import EmployeeProfile from './wizard/EmployeeProfile.jsx';
 
 const VIEWS = [
   { id: 'wizard', label: 'Step-by-step wizard' },
-  { id: 'scroll', label: 'Single page' },
   { id: 'invite', label: 'Send invite' },
 ];
 
@@ -68,7 +66,6 @@ export default function App() {
               </div>
 
               {viewMode === 'wizard' && <EmployeeWizard onComplete={handleComplete} />}
-              {viewMode === 'scroll' && <EmployeeScrollForm onComplete={handleComplete} />}
               {viewMode === 'invite' && (
                 <EmployeeInviteForm
                   onComplete={handleComplete}
