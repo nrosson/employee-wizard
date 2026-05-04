@@ -1,0 +1,31 @@
+/* Suite UI kit — layout and content styles */
+
+.suite-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+  background: var(--surface-default);
+  font-family: var(--font-sans);
+}
+
+.suite-main {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-width: 0;
+  padding: 0 32px;
+}
+
+.suite-content {
+  padding: 28px 0 48px;
+  background: var(--surface-default);
+  overflow: auto;
+}
+
+:focus-visible {
+  outline: var(--brand-focus);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
