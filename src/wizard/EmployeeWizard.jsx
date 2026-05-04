@@ -19,8 +19,9 @@ const STEP_TITLES = [
 
 const INITIAL_FORM = {
   personal: {
-    firstName: '', lastName: '', ssn: '', dob: '', maritalStatus: '',
-    address: '', city: '', state: '', zip: '', phone: '', email: '',
+    firstName: '', middleName: '', lastName: '', ssn: '', dob: '', maritalStatus: '',
+    maidenName: '', address: '', addressLine2: '', city: '', state: '', zip: '',
+    email: '', sendPortalInvite: false, phone: '', altPhone: '',
   },
   work: {
     location: '', hireDate: '', positionType: '', title: '',
@@ -152,20 +153,16 @@ export default function EmployeeWizard({ onComplete }) {
     <div>
       {/* Page heading */}
       <div style={{ marginBottom: 28 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-          <a
-            href="#"
-            onClick={e => { e.preventDefault(); handleSaveExit(); }}
-            style={{ fontSize: 13, color: 'var(--color-primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
-          >
-            ← Employees
-          </a>
-        </div>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-default)', margin: '0 0 4px' }}>
-          Add New Employee
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-default)', margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          Add Employee: Manually Enter
+          <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-muted)', cursor: 'help' }} title="Help">?</span>
         </h1>
         <p style={{ margin: 0, fontSize: 14, color: 'var(--text-secondary)' }}>
-          Step {currentStep + 1} of {STEP_TITLES.length} — {STEP_TITLES[currentStep]}
+          Enter all your employee's information or{' '}
+          <a href="#" onClick={e => e.preventDefault()} style={{ color: 'var(--color-primary)' }}>
+            send invitation to employee
+          </a>{' '}
+          to complete their setup.
         </p>
       </div>
 
@@ -177,12 +174,7 @@ export default function EmployeeWizard({ onComplete }) {
       />
 
       {/* Step content */}
-      <div style={{
-        background: 'var(--surface-default)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 8,
-        padding: '24px 28px',
-      }}>
+      <div>
         {currentStep === 0 && <Step1PersonalInfo {...stepProps[0]} errors={errors} />}
         {currentStep === 1 && <Step2WorkInfo     {...stepProps[1]} errors={errors} />}
         {currentStep === 2 && <Step3PayInfo      {...stepProps[2]} errors={errors} />}

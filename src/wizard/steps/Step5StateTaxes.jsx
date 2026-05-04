@@ -1,4 +1,5 @@
 import { FormField, Banner } from '../../shell/Primitives.jsx';
+import SectionRow from '../SectionRow.jsx';
 
 const NO_INCOME_TAX_STATES = ['AK', 'FL', 'NV', 'NH', 'SD', 'TN', 'TX', 'WA', 'WY'];
 
@@ -32,97 +33,77 @@ export default function Step5StateTaxes({ data, onChange, errors }) {
 
   return (
     <div>
-      <Banner variant="info" icon="info" title="State withholding is based on the employee's state form">
-        Have the employee complete their state's equivalent of a W-4 (e.g. Form IT-2104 in New York, DE-4 in California). Use values from that form below.
-      </Banner>
-
-      <div style={{ marginTop: 24 }}>
-        {/* State of Residence */}
+      <SectionRow title="State Withholding" last={!data.stateCode || noTax}>
         <div style={{ marginBottom: 16 }}>
+          <Banner variant="info" icon="info" title="State withholding is based on the employee's state form">
+            Have the employee complete their state's equivalent of a W-4. Use values from that form below.
+          </Banner>
+        </div>
+
+        {/* State selector */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: noTax ? 0 : 16 }}>
           <FormField label="State of Residence / Work State" required error={!!errors.stateCode} hint={errors.stateCode}>
             <select
               className={`form-input${errors.stateCode ? ' error' : ''}`}
               value={data.stateCode}
               onChange={set('stateCode')}
             >
-              <option value="">Select state…</option>
+              <option value="">Select state...</option>
               {US_STATES.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}
             </select>
           </FormField>
+          <div />
         </div>
 
         {noTax && (
           <Banner variant="success" icon="check-circle" title={`${data.stateCode} has no state income tax`}>
-            Employees in this state are not subject to state income tax withholding. No additional information is required for this step.
+            Employees in this state are not subject to state income tax withholding. No additional information is required.
           </Banner>
         )}
 
         {data.stateCode && !noTax && (
           <>
-            {/* Filing Status for State */}
-            <div style={{ marginBottom: 16 }}>
+            {/* State Filing Status */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
               <FormField label="State Filing Status" required error={!!errors.stateFilingStatus} hint={errors.stateFilingStatus}>
                 <select
                   className={`form-input${errors.stateFilingStatus ? ' error' : ''}`}
                   value={data.stateFilingStatus}
                   onChange={set('stateFilingStatus')}
                 >
-                  <option value="">Select filing status…</option>
+                  <option value="">Select...</option>
                   <option value="single">Single</option>
                   <option value="married">Married</option>
                   <option value="head">Head of Household</option>
                 </select>
               </FormField>
+              <div />
             </div>
 
             {/* Allowances + Extra Withholding */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
-              <FormField label="State Allowances / Exemptions" hint="Number of allowances claimed on state form">
-                <input
-                  className="form-input"
-                  type="number"
-                  min="0"
-                  step="1"
-                  value={data.stateAllowances}
-                  onChange={set('stateAllowances')}
-                  placeholder="0"
-                />
+              <FormField label="State Allowances / Exemptions" hint="Number of allowances from state form">
+                <input className="form-input" type="number" min="0" value={data.stateAllowances} onChange={set('stateAllowances')} placeholder="0" />
               </FormField>
               <FormField label="Extra State Withholding per Period" hint="Additional amount in dollars">
                 <div style={{ position: 'relative' }}>
-                  <span style={{
-                    position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
-                    fontSize: 14, color: 'var(--text-muted)', pointerEvents: 'none',
-                  }}>$</span>
-                  <input
-                    className="form-input"
-                    style={{ paddingLeft: 24 }}
-                    type="number"
-                    min="0"
-                    step="1"
-                    value={data.stateExtraWithholding}
-                    onChange={set('stateExtraWithholding')}
-                    placeholder="0"
-                  />
+                  <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: 'var(--text-muted)', pointerEvents: 'none' }}>$</span>
+                  <input className="form-input" style={{ paddingLeft: 24 }} type="number" min="0" value={data.stateExtraWithholding} onChange={set('stateExtraWithholding')} placeholder="0" />
                 </div>
               </FormField>
             </div>
 
             {/* State Exemption */}
-            <div style={{
-              display: 'flex', alignItems: 'flex-start', gap: 10,
-              padding: '14px 16px', borderRadius: 8,
-              background: 'var(--color-warning-surface)', border: '1px solid #fcd34d',
-            }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
               <input
                 type="checkbox"
                 id="stateExempt"
                 checked={data.stateExempt}
                 onChange={set('stateExempt')}
-                style={{ marginTop: 2, accentColor: 'var(--color-primary)', width: 16, height: 16, flexShrink: 0, cursor: 'pointer' }}
+                style={{ marginTop: 2, accentColor: 'var(--color-primary)', width: 15, height: 15, flexShrink: 0, cursor: 'pointer' }}
               />
-              <label htmlFor="stateExempt" style={{ fontSize: 14, color: 'var(--color-warning-text)', cursor: 'pointer', lineHeight: 1.5 }}>
-                <strong>Claim exemption from state income tax withholding</strong>
+              <label htmlFor="stateExempt" style={{ fontSize: 13, color: 'var(--color-warning-text)', cursor: 'pointer', lineHeight: 1.5 }}>
+                Claim exemption from state income tax withholding
                 <br />
                 <span style={{ fontSize: 12 }}>
                   Only check if the employee has claimed exemption on their state withholding form and qualifies under state law.
@@ -131,7 +112,7 @@ export default function Step5StateTaxes({ data, onChange, errors }) {
             </div>
           </>
         )}
-      </div>
+      </SectionRow>
     </div>
   );
 }
